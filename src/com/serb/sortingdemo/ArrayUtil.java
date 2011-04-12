@@ -18,6 +18,13 @@ public class ArrayUtil {
         System.out.println("\n");
     }
 
+    static void printValues(int[][] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i]+ ", ");
+        }
+        System.out.println("\n");
+    }
+
     static void bubbleSort(int[] arr) {
         printValues(arr);
         for (int i = arr.length-1; i >= 0; i--) {
