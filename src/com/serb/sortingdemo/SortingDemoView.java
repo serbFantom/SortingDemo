@@ -4,24 +4,36 @@
 
 package com.serb.sortingdemo;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
+import org.jdesktop.application.Task;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 import java.util.Arrays;
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * The application's main frame.
  */
 public class SortingDemoView extends FrameView {
 
+    private final static String SEPARATOR_IN_FILE_PROPERTIE = "fileToLoadSeparator";
+    private final static String IS_STRING_NUMBER_PATTERN = "((-|\\+)?[0-9]+(\\.[0-9]+)?)+";
     public SortingDemoView(SingleFrameApplication app) {
         super(app);
 
@@ -221,6 +233,7 @@ public class SortingDemoView extends FrameView {
         sortMenuItem.setName("sortMenuItem"); // NOI18N
         Main.add(sortMenuItem);
 
+        loadFromFileMenuItem.setAction(actionMap.get("loadFromFile")); // NOI18N
         loadFromFileMenuItem.setText(resourceMap.getString("loadFromFileMenuItem.text")); // NOI18N
         loadFromFileMenuItem.setName("loadFromFileMenuItem"); // NOI18N
         Main.add(loadFromFileMenuItem);
@@ -228,7 +241,6 @@ public class SortingDemoView extends FrameView {
         menuBar.add(Main);
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
-        helpMenu.setName("helpMenu"); // NOI18N
 
         aboutMenuItem.setAction(actionMap.get("showAboutBox")); // NOI18N
         aboutMenuItem.setName("aboutMenuItem"); // NOI18N
@@ -289,14 +301,15 @@ public class SortingDemoView extends FrameView {
         //ArrayUtil.bubbleSort(mass);
         //mainSortTable.
         for (int rowIndex=0; rowIndex < mainSortTable.getRowCount(); rowIndex++) {
-            for (int columnIndex=0; columnIndex < mainSortTable.getColumnCount(); columnIndex++) {
+            for (int columnIndex = 0; columnIndex < mainSortTable.getColumnCount(); columnIndex++) {
                 System.out.print(mainSortTable.getModel().getValueAt(rowIndex, columnIndex)+", ");
             }
             System.out.print("\n");
         }
         mainSortTable.getModel().getColumnCount();
-        /*Arrays.sort(mass);
-        Arrays.binarySearch(mass, busyIconIndex);*/
+        //ArrayUtil.bubbleSort(mass);
+        Arrays.sort(mass);
+        Arrays.binarySearch(mass, busyIconIndex);
         
     }//GEN-LAST:event_doSortAction
 
@@ -304,6 +317,177 @@ public class SortingDemoView extends FrameView {
     public void doSort() {
         System.out.println("doSort() method");
     }
+    /**
+     * Bubble sort for main table O(n*n)
+     */
+    private void bubbleSort() {
+        int rowCount = mainSortTable.getRowCount();
+        int columnCount = mainSortTable.getColumnCount();
+        for (int rowIndex = rowCount - 1; rowIndex <= 0; rowIndex--) {
+            for (int columnIndex = columnCount-1; columnIndex <=0 ; columnIndex--) {
+                //System.out.print(mainSortTable.getModel().getValueAt(rowIndex, columnIndex)+", ");
+                for (int i=0; i > columnIndex; i++) {
+                    if (((Integer)mainSortTable.getModel().getValueAt(rowIndex, columnIndex)) >
+                            (Integer)mainSortTable.getModel().getValueAt(rowIndex+1, columnIndex)+1) {
+                        swapTable(rowIndex, columnIndex);
+                    }
+                }
+            }
+            System.out.print("\n");
+        }
+    }
+    //TODO:
+    private void swapTable(int rowIndex, int columnIndex) {
+
+    }
+
+    //TODO: implement this method
+    private void quickSort() {
+
+    }
+
+    @Action
+    public Task loadFromFile() {
+        JFileChooser fc = createFileChooser("openFileChooser");
+        int option = fc.showOpenDialog(getFrame());
+        Task task = null;
+        if (JFileChooser.APPROVE_OPTION == option) {            
+            loadFromFile(fc.getSelectedFile());
+        }
+        return new LoadFromFileTask(getApplication());
+    }
+
+    /**
+     * Load values from file to main table of app.
+     * @param fileToLoad
+     */
+    private void loadFromFile(File fileToLoad) {
+        BufferedReader input = null;
+        try {
+            input = new BufferedReader(new FileReader(fileToLoad));
+            String line;
+            int columnIndex = 0;
+            int rowIndex = 0;
+            int columnCount = mainSortTable.getColumnCount();
+            int rowCount = mainSortTable.getRowCount();
+            while ((line = input.readLine()) != null) {
+                if (rowIndex >= rowCount) {
+                    System.err.print("File has more lines than needed. Line no "
+                            +rowIndex+" "+line+"is explicit.");
+                    break;
+                }
+                columnIndex = 0;
+                String[] values = line.trim().split(getResourceMap().getString(SEPARATOR_IN_FILE_PROPERTIE));
+                if (columnCount != values.length) {
+                    System.err.print("Line "+line+"does not match");
+                    break;
+                }
+                boolean error = false;
+                for ( ;columnIndex < columnCount; columnIndex++) {
+                    if (isStringNumber(values[columnIndex].trim())) {
+                        mainSortTable.getModel().setValueAt(values[columnIndex], rowIndex, columnIndex);
+                    } else {
+                        System.err.print("Line "+line+"contains wrong number: "+values[columnIndex]);
+                        error = true;
+                        break;
+                    }
+                }
+                if (error) {
+                    break;
+                }
+                rowIndex++;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(SortingDemoView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }
+
+    /**
+     * Check using String that it contains only number. Regular
+     * expression used
+     *
+     * @param strToCheck
+     * @return
+     */
+    private boolean isStringNumber(String strToCheck) {        
+        return strToCheck.matches(IS_STRING_NUMBER_PATTERN);
+    }
+
+    /**
+     * Create swing JFileChooser. Set current directory for chooser.
+     * @param name will set in dialog title
+     * @return
+     */
+    private JFileChooser createFileChooser(String name) {
+        JFileChooser fc = new JFileChooser();
+        fc.setDialogTitle(getResourceMap().getString(name + ".dialogTitle"));
+        String textFilesDesc = getResourceMap().getString("txtFileExtensionDescription");
+        fc.setFileFilter(new TextFileFilter(textFilesDesc));
+        fc.setCurrentDirectory(new File(".").getAbsoluteFile());
+        return fc;
+    }
+
+    /** This is a substitute for FileNameExtensionFilter, which is
+     * only available on Java SE 6.
+     */
+    private static class TextFileFilter extends FileFilter {
+
+        private final String description;
+
+        TextFileFilter(String description) {
+            this.description = description;
+        }
+
+        @Override
+        public boolean accept(File f) {
+            if (f.isDirectory()) {
+                return true;
+            }
+            String fileName = f.getName();
+            int i = fileName.lastIndexOf('.');
+            if ((i > 0) && (i < (fileName.length() - 1))) {
+                String fileExt = fileName.substring(i + 1);
+                if ("txt".equalsIgnoreCase(fileExt)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+    }
+
+
+    private class LoadFromFileTask extends org.jdesktop.application.Task<Object, Void> {
+        LoadFromFileTask(org.jdesktop.application.Application app) {
+            // Runs on the EDT.  Copy GUI state that
+            // doInBackground() depends on from parameters
+            // to LoadFromFileTask fields, here.
+            super(app);
+        }
+        @Override protected Object doInBackground() {
+            // Your Task's code here.  This method runs
+            // on a background thread, so don't reference
+            // the Swing GUI from here.
+            return null;  // return your result
+        }
+        @Override protected void succeeded(Object result) {
+            // Runs on the EDT.  Update the GUI based on
+            // the result computed by doInBackground().
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu Main;

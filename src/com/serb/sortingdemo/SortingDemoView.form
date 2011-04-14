@@ -155,6 +155,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="loadFromFileMenuItem">
               <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                  <action class="com.serb.sortingdemo.SortingDemoView" id="loadFromFile" methodName="loadFromFile"/>
+                </Property>
                 <Property name="text" type="java.lang.String" resourceKey="loadFromFileMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="loadFromFileMenuItem" noResource="true"/>
               </Properties>
@@ -164,7 +167,6 @@
         <Menu class="javax.swing.JMenu" name="helpMenu">
           <Properties>
             <Property name="text" type="java.lang.String" resourceKey="helpMenu.text"/>
-            <Property name="name" type="java.lang.String" value="helpMenu" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
