@@ -1,12 +1,20 @@
 /*
  * SortingDemoAboutBox.java
  */
-
 package com.serb.sortingdemo;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 
 public class SortingDemoAboutBox extends javax.swing.JDialog {
+
+    ResourceMap resourceMap =Application.getInstance().getContext().
+            getResourceMap(SortingDemoAboutBox.class);
 
     public SortingDemoAboutBox(java.awt.Frame parent) {
         super(parent);
@@ -14,8 +22,32 @@ public class SortingDemoAboutBox extends javax.swing.JDialog {
         getRootPane().setDefaultButton(closeButton);
     }
 
-    @Action public void closeAboutBox() {
+    @Action
+    public void closeAboutBox() {
         dispose();
+    }
+
+    /**
+     * Launch browser
+     * @param uriStr
+     */
+    private void launchBrowser(String uriStr) {
+        Desktop desktop;
+        if (Desktop.isDesktopSupported()) {
+            desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                // launch browser
+                URI uri;
+                try {
+                    uri = new URI(uriStr);
+                    desktop.browse(uri);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                } catch (URISyntaxException use) {
+                    use.printStackTrace();
+                }
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -33,9 +65,10 @@ public class SortingDemoAboutBox extends javax.swing.JDialog {
         javax.swing.JLabel vendorLabel = new javax.swing.JLabel();
         javax.swing.JLabel appVendorLabel = new javax.swing.JLabel();
         javax.swing.JLabel homepageLabel = new javax.swing.JLabel();
-        javax.swing.JLabel appHomepageLabel = new javax.swing.JLabel();
         javax.swing.JLabel appDescLabel = new javax.swing.JLabel();
         javax.swing.JLabel imageLabel = new javax.swing.JLabel();
+        vendorNameLabel = new javax.swing.JLabel();
+        appHomePageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.serb.sortingdemo.SortingDemoApp.class).getContext().getResourceMap(SortingDemoAboutBox.class);
@@ -70,14 +103,23 @@ public class SortingDemoAboutBox extends javax.swing.JDialog {
         homepageLabel.setText(resourceMap.getString("homepageLabel.text")); // NOI18N
         homepageLabel.setName("homepageLabel"); // NOI18N
 
-        appHomepageLabel.setText(resourceMap.getString("Application.homepage")); // NOI18N
-        appHomepageLabel.setName("appHomepageLabel"); // NOI18N
-
         appDescLabel.setText(resourceMap.getString("appDescLabel.text")); // NOI18N
         appDescLabel.setName("appDescLabel"); // NOI18N
 
         imageLabel.setIcon(resourceMap.getIcon("imageLabel.icon")); // NOI18N
         imageLabel.setName("imageLabel"); // NOI18N
+
+        vendorNameLabel.setText(resourceMap.getString("vendorNameLabel.text")); // NOI18N
+        vendorNameLabel.setName("vendorNameLabel"); // NOI18N
+
+        appHomePageLabel.setText(resourceMap.getString("appHomePageLabel.text")); // NOI18N
+        appHomePageLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        appHomePageLabel.setName("appHomePageLabel"); // NOI18N
+        appHomePageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                appHomePageLabelMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -90,21 +132,27 @@ public class SortingDemoAboutBox extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(versionLabel)
-                            .addComponent(vendorLabel)
-                            .addComponent(homepageLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(vendorLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(vendorNameLabel)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(appVersionLabel)
-                            .addComponent(appVendorLabel)
-                            .addComponent(appHomepageLabel)))
+                            .addComponent(appVendorLabel))
+                        .addGap(195, 195, 195))
                     .addComponent(appTitleLabel, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(appDescLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                    .addComponent(closeButton))
+                    .addComponent(appDescLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                    .addComponent(closeButton)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(homepageLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(appHomePageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 188, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(appTitleLabel)
@@ -117,21 +165,27 @@ public class SortingDemoAboutBox extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(vendorLabel)
-                    .addComponent(appVendorLabel))
+                    .addComponent(appVendorLabel)
+                    .addComponent(vendorNameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(homepageLabel)
-                    .addComponent(appHomepageLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                    .addComponent(appHomePageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(closeButton)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
+    private void appHomePageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_appHomePageLabelMouseClicked
+        launchBrowser(resourceMap.getString("appHomePageUri"));
+    }//GEN-LAST:event_appHomePageLabelMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel appHomePageLabel;
     private javax.swing.JButton closeButton;
+    private javax.swing.JLabel vendorNameLabel;
     // End of variables declaration//GEN-END:variables
-    
 }

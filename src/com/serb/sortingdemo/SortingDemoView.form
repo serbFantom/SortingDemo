@@ -10,16 +10,20 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jScrollPane1" min="-2" pref="375" max="-2" attributes="1"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <Component id="jPanel1" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jScrollPane1" min="-2" pref="375" max="-2" attributes="1"/>
+                          <EmptySpace pref="60" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="fileNameLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="435" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -28,9 +32,11 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="fileNameLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="86" max="-2" attributes="0"/>
-                  <EmptySpace pref="52" max="32767" attributes="0"/>
+                  <EmptySpace pref="34" max="32767" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -50,13 +56,32 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="mainSortTable">
               <Properties>
-                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="4" rowCount="4">
-                    <Column editable="true" title="" type="java.lang.Integer"/>
-                    <Column editable="true" title="" type="java.lang.Integer"/>
-                    <Column editable="true" title="" type="java.lang.Integer"/>
-                    <Column editable="true" title="" type="java.lang.Integer"/>
+                    <Column editable="true" title="" type="java.lang.Integer">
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                    </Column>
+                    <Column editable="true" title="" type="java.lang.Integer">
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                    </Column>
+                    <Column editable="true" title="" type="java.lang.Integer">
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                    </Column>
+                    <Column editable="true" title="" type="java.lang.Integer">
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                      <Data value="0"/>
+                    </Column>
                   </Table>
                 </Property>
                 <Property name="cellSelectionEnabled" type="boolean" value="true"/>
@@ -65,6 +90,9 @@
                 </Property>
                 <Property name="dragEnabled" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="mainSortTable" noResource="true"/>
+                <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                  <TableHeader reorderingAllowed="false" resizingAllowed="false"/>
+                </Property>
               </Properties>
             </Component>
           </SubComponents>
@@ -96,6 +124,9 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="buttonSort">
               <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                  <action class="com.serb.sortingdemo.SortingDemoView" id="doSort" methodName="doSort"/>
+                </Property>
                 <Property name="text" type="java.lang.String" resourceKey="buttonSort.text"/>
                 <Property name="toolTipText" type="java.lang.String" resourceKey="buttonSort.toolTipText"/>
                 <Property name="name" type="java.lang.String" value="buttonSort" noResource="true"/>
@@ -106,6 +137,12 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JLabel" name="fileNameLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" resourceKey="fileNameLabel.text"/>
+            <Property name="name" type="java.lang.String" value="fileNameLabel" noResource="true"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JMenuBar" name="menuBar">
@@ -120,7 +157,6 @@
         <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
             <Property name="text" type="java.lang.String" resourceKey="fileMenu.text"/>
-            <Property name="name" type="java.lang.String" value="fileMenu" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -149,6 +185,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="sortMenuItem">
               <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                  <action class="com.serb.sortingdemo.SortingDemoView" id="doSort" methodName="doSort"/>
+                </Property>
                 <Property name="text" type="java.lang.String" resourceKey="sortMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="sortMenuItem" noResource="true"/>
               </Properties>

@@ -32,8 +32,9 @@ import javax.swing.filechooser.FileFilter;
  */
 public class SortingDemoView extends FrameView {
 
-    private final static String SEPARATOR_IN_FILE_PROPERTIE = "fileToLoadSeparator";
+    private final static String SEPARATOR_IN_FILE_PROPERTY = "fileToLoadSeparator";
     private final static String IS_STRING_NUMBER_PATTERN = "((-|\\+)?[0-9]+(\\.[0-9]+)?)+";
+
     public SortingDemoView(SingleFrameApplication app) {
         super(app);
 
@@ -118,6 +119,7 @@ public class SortingDemoView extends FrameView {
         mainSortTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         buttonSort = new javax.swing.JButton();
+        fileNameLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -136,13 +138,12 @@ public class SortingDemoView extends FrameView {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        mainSortTable.setAutoCreateRowSorter(true);
         mainSortTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {new Integer(0), new Integer(0), new Integer(0), new Integer(0)},
+                {new Integer(0), new Integer(0), new Integer(0), new Integer(0)},
+                {new Integer(0), new Integer(0), new Integer(0), new Integer(0)},
+                {new Integer(0), new Integer(0), new Integer(0), new Integer(0)}
             },
             new String [] {
                 "", "", "", ""
@@ -160,10 +161,14 @@ public class SortingDemoView extends FrameView {
         mainSortTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         mainSortTable.setDragEnabled(true);
         mainSortTable.setName("mainSortTable"); // NOI18N
+        mainSortTable.getTableHeader().setResizingAllowed(false);
+        mainSortTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(mainSortTable);
 
         jPanel1.setName("jPanel1"); // NOI18N
 
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.serb.sortingdemo.SortingDemoApp.class).getContext().getActionMap(SortingDemoView.class, this);
+        buttonSort.setAction(actionMap.get("doSort")); // NOI18N
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.serb.sortingdemo.SortingDemoApp.class).getContext().getResourceMap(SortingDemoView.class);
         buttonSort.setText(resourceMap.getString("buttonSort.text")); // NOI18N
         buttonSort.setToolTipText(resourceMap.getString("buttonSort.toolTipText")); // NOI18N
@@ -190,6 +195,9 @@ public class SortingDemoView extends FrameView {
                 .addGap(27, 27, 27))
         );
 
+        fileNameLabel.setText(resourceMap.getString("fileNameLabel.text")); // NOI18N
+        fileNameLabel.setName("fileNameLabel"); // NOI18N
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -198,18 +206,23 @@ public class SortingDemoView extends FrameView {
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(33, 33, 33))))
+                        .addGap(33, 33, 33))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(60, Short.MAX_VALUE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(fileNameLabel)
+                        .addContainerGap(435, Short.MAX_VALUE))))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(24, 24, 24)
+                .addComponent(fileNameLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -217,9 +230,7 @@ public class SortingDemoView extends FrameView {
         menuBar.setName("mainMenuBar"); // NOI18N
 
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
-        fileMenu.setName("fileMenu"); // NOI18N
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.serb.sortingdemo.SortingDemoApp.class).getContext().getActionMap(SortingDemoView.class, this);
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
         exitMenuItem.setName("exitMenuItem"); // NOI18N
         fileMenu.add(exitMenuItem);
@@ -229,6 +240,7 @@ public class SortingDemoView extends FrameView {
         Main.setText(resourceMap.getString("Main.text")); // NOI18N
         Main.setName("Main"); // NOI18N
 
+        sortMenuItem.setAction(actionMap.get("doSort")); // NOI18N
         sortMenuItem.setText(resourceMap.getString("sortMenuItem.text")); // NOI18N
         sortMenuItem.setName("sortMenuItem"); // NOI18N
         Main.add(sortMenuItem);
@@ -293,52 +305,52 @@ public class SortingDemoView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void doSortAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doSortAction
-        System.out.println("doSortAction() method");
-        //mainSortTable.
-         
-        //bubble sort
-        int[] mass = new int[] {9,8,7,6,5,1,2,3,4};
-        //ArrayUtil.bubbleSort(mass);
-        //mainSortTable.
-        for (int rowIndex=0; rowIndex < mainSortTable.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < mainSortTable.getColumnCount(); columnIndex++) {
-                System.out.print(mainSortTable.getModel().getValueAt(rowIndex, columnIndex)+", ");
-            }
-            System.out.print("\n");
-        }
-        mainSortTable.getModel().getColumnCount();
-        //ArrayUtil.bubbleSort(mass);
-        Arrays.sort(mass);
-        Arrays.binarySearch(mass, busyIconIndex);
         
     }//GEN-LAST:event_doSortAction
 
     @Action
     public void doSort() {
         System.out.println("doSort() method");
+        bubbleSort();
     }
+
     /**
-     * Bubble sort for main table O(n*n)
+     * Bubble sort for main table O(n*n). TODO: bubble sort for table
      */
     private void bubbleSort() {
+        System.out.println("SortingDemoView bubbleSort new version");
         int rowCount = mainSortTable.getRowCount();
-        int columnCount = mainSortTable.getColumnCount();
-        for (int rowIndex = rowCount - 1; rowIndex <= 0; rowIndex--) {
-            for (int columnIndex = columnCount-1; columnIndex <=0 ; columnIndex--) {
-                //System.out.print(mainSortTable.getModel().getValueAt(rowIndex, columnIndex)+", ");
-                for (int i=0; i > columnIndex; i++) {
-                    if (((Integer)mainSortTable.getModel().getValueAt(rowIndex, columnIndex)) >
-                            (Integer)mainSortTable.getModel().getValueAt(rowIndex+1, columnIndex)+1) {
-                        swapTable(rowIndex, columnIndex);
+        int columnCount = mainSortTable.getColumnCount();        
+        /*for (int rowIndex = rowCount - 1; rowIndex >= 0; rowIndex--) {
+            for (int columnIndex = columnCount-1; columnIndex >=0 ; columnIndex--) {
+                System.out.print(mainSortTable.getValueAt(rowIndex, columnIndex)+", ");
+                for (int i = 0; i < columnIndex; i++) {                    
+                    if ((Integer)mainSortTable.getValueAt(rowIndex, i) >
+                            (Integer) mainSortTable.getValueAt(rowIndex, i+1)) {
+                        swapTable(rowIndex, i, i+1);
+                    }
+                }
+            }            
+        }*/
+
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+            for (int columnIndex = 0; columnIndex < columnCount ; columnCount--) {
+                System.out.print(mainSortTable.getValueAt(rowIndex, columnIndex)+", ");
+                for (int i = 0; i < columnIndex; i++) {                    
+                    if ((Integer)mainSortTable.getValueAt(rowIndex, i) >
+                            (Integer) mainSortTable.getValueAt(rowIndex, i+1)) {
+                        swapTable(rowIndex, i, i+1);
                     }
                 }
             }
-            System.out.print("\n");
         }
     }
     //TODO:
-    private void swapTable(int rowIndex, int columnIndex) {
-
+    private void swapTable(int oldRowIndex, int oldColumnIndex, int newColumnIndex) {
+        System.out.println("SortingDemoView swapTable() oldRowIndex: "+oldRowIndex+" "+"oldColumnIndex: "+oldColumnIndex+" "+ "+newColumnIndex: "+newColumnIndex);
+        Integer tmp = (Integer) mainSortTable.getValueAt(oldRowIndex, oldColumnIndex);
+        mainSortTable.setValueAt(mainSortTable.getValueAt(oldRowIndex, newColumnIndex), oldRowIndex, oldColumnIndex);
+        mainSortTable.setValueAt(tmp, oldRowIndex, newColumnIndex);
     }
 
     //TODO: implement this method
@@ -374,29 +386,26 @@ public class SortingDemoView extends FrameView {
                 if (rowIndex >= rowCount) {
                     System.err.print("File has more lines than needed. Line no "
                             +rowIndex+" "+line+"is explicit.");
-                    break;
+                    return;
                 }
                 columnIndex = 0;
-                String[] values = line.trim().split(getResourceMap().getString(SEPARATOR_IN_FILE_PROPERTIE));
+                String[] values = line.trim().split(getResourceMap().getString(SEPARATOR_IN_FILE_PROPERTY));
                 if (columnCount != values.length) {
                     System.err.print("Line "+line+"does not match");
-                    break;
-                }
-                boolean error = false;
+                    return;
+                }                
                 for ( ;columnIndex < columnCount; columnIndex++) {
                     if (isStringNumber(values[columnIndex].trim())) {
-                        mainSortTable.getModel().setValueAt(values[columnIndex], rowIndex, columnIndex);
+                        mainSortTable.getModel().setValueAt(Integer.parseInt(values[columnIndex].trim()), rowIndex, columnIndex);
                     } else {
-                        System.err.print("Line "+line+"contains wrong number: "+values[columnIndex]);
-                        error = true;
-                        break;
+                        System.err.print("Line "+line+"contains wrong number: "+values[columnIndex]);                        
+                        return;
                     }
                 }
-                if (error) {
-                    break;
-                }
+                
                 rowIndex++;
             }
+            fileNameLabel.setText(fileToLoad.getAbsolutePath());
         } catch (IOException ex) {
             Logger.getLogger(SortingDemoView.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -424,12 +433,13 @@ public class SortingDemoView extends FrameView {
     /**
      * Create swing JFileChooser. Set current directory for chooser.
      * @param name will set in dialog title
-     * @return
+     * @return created JFileChooser
      */
     private JFileChooser createFileChooser(String name) {
         JFileChooser fc = new JFileChooser();
         fc.setDialogTitle(getResourceMap().getString(name + ".dialogTitle"));
-        String textFilesDesc = getResourceMap().getString("txtFileExtensionDescription");
+        String textFilesDesc = getResourceMap().
+                getString("txtFileExtensionDescription");
         fc.setFileFilter(new TextFileFilter(textFilesDesc));
         fc.setCurrentDirectory(new File(".").getAbsoluteFile());
         return fc;
@@ -492,6 +502,7 @@ public class SortingDemoView extends FrameView {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu Main;
     private javax.swing.JButton buttonSort;
+    private javax.swing.JLabel fileNameLabel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuItem loadFromFileMenuItem;
