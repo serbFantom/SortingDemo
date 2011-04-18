@@ -1,11 +1,8 @@
 /*
  * SortingDemoView.java
  */
-
 package com.serb.sortingdemo;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -19,13 +16,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Random;
+import java.util.Set;
+
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
+import org.apache.log4j.Logger;
 
 /**
  * The application's main frame.
@@ -34,6 +36,7 @@ public class SortingDemoView extends FrameView {
 
     private final static String SEPARATOR_IN_FILE_PROPERTY = "fileToLoadSeparator";
     private final static String IS_STRING_NUMBER_PATTERN = "((-|\\+)?[0-9]+(\\.[0-9]+)?)+";
+    private static Logger log = Logger.getLogger(SortingDemoView.class);
 
     public SortingDemoView(SingleFrameApplication app) {
         super(app);
@@ -44,6 +47,7 @@ public class SortingDemoView extends FrameView {
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
         messageTimer = new Timer(messageTimeout, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 statusMessageLabel.setText("");
             }
@@ -54,6 +58,7 @@ public class SortingDemoView extends FrameView {
             busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
         busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
@@ -66,6 +71,7 @@ public class SortingDemoView extends FrameView {
         // connecting action tasks to status bar via TaskMonitor
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
         taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String propertyName = evt.getPropertyName();
                 if ("started".equals(propertyName)) {
@@ -82,11 +88,11 @@ public class SortingDemoView extends FrameView {
                     progressBar.setVisible(false);
                     progressBar.setValue(0);
                 } else if ("message".equals(propertyName)) {
-                    String text = (String)(evt.getNewValue());
+                    String text = (String) (evt.getNewValue());
                     statusMessageLabel.setText((text == null) ? "" : text);
                     messageTimer.restart();
                 } else if ("progress".equals(propertyName)) {
-                    int value = (Integer)(evt.getNewValue());
+                    int value = (Integer) (evt.getNewValue());
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(false);
                     progressBar.setValue(value);
@@ -123,9 +129,10 @@ public class SortingDemoView extends FrameView {
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
-        Main = new javax.swing.JMenu();
+        SortMenu = new javax.swing.JMenu();
         sortMenuItem = new javax.swing.JMenuItem();
         loadFromFileMenuItem = new javax.swing.JMenuItem();
+        fillTableRandomMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -237,20 +244,25 @@ public class SortingDemoView extends FrameView {
 
         menuBar.add(fileMenu);
 
-        Main.setText(resourceMap.getString("Main.text")); // NOI18N
-        Main.setName("Main"); // NOI18N
+        SortMenu.setText(resourceMap.getString("SortMenu.text")); // NOI18N
+        SortMenu.setName("SortMenu"); // NOI18N
 
         sortMenuItem.setAction(actionMap.get("doSort")); // NOI18N
         sortMenuItem.setText(resourceMap.getString("sortMenuItem.text")); // NOI18N
         sortMenuItem.setName("sortMenuItem"); // NOI18N
-        Main.add(sortMenuItem);
+        SortMenu.add(sortMenuItem);
 
         loadFromFileMenuItem.setAction(actionMap.get("loadFromFile")); // NOI18N
         loadFromFileMenuItem.setText(resourceMap.getString("loadFromFileMenuItem.text")); // NOI18N
         loadFromFileMenuItem.setName("loadFromFileMenuItem"); // NOI18N
-        Main.add(loadFromFileMenuItem);
+        SortMenu.add(loadFromFileMenuItem);
 
-        menuBar.add(Main);
+        fillTableRandomMenuItem.setAction(actionMap.get("fillTableRandom")); // NOI18N
+        fillTableRandomMenuItem.setText(resourceMap.getString("fillTableRandomMenuItem.text")); // NOI18N
+        fillTableRandomMenuItem.setName("fillTableRandomMenuItem"); // NOI18N
+        SortMenu.add(fillTableRandomMenuItem);
+
+        menuBar.add(SortMenu);
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
 
@@ -305,7 +317,6 @@ public class SortingDemoView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void doSortAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doSortAction
-        
     }//GEN-LAST:event_doSortAction
 
     @Action
@@ -315,47 +326,53 @@ public class SortingDemoView extends FrameView {
     }
 
     /**
-     * Bubble sort for main table O(n*n). TODO: bubble sort for table
+     * Bubble sort for main table O(n*n). 
+     * Used only for academic goals
      */
     private void bubbleSort() {
         System.out.println("SortingDemoView bubbleSort new version");
+        /*int[][] arrToSort = new int[][]{
+            {16, 15, 14, 13},
+            {6, 10, 11, 12, 15, 17},
+            {4, 1, 2, 3},
+            {9, 8, 7, 5},                        
+            {17, 19, 20, 18},};
+        ArrayUtil.printValues(arrToSort);
+        ArrayUtil.bubbleSort(arrToSort);        
+        ArrayUtil.printValues(arrToSort);*/
+
         int rowCount = mainSortTable.getRowCount();
-        int columnCount = mainSortTable.getColumnCount();        
-        /*for (int rowIndex = rowCount - 1; rowIndex >= 0; rowIndex--) {
-            for (int columnIndex = columnCount-1; columnIndex >=0 ; columnIndex--) {
-                System.out.print(mainSortTable.getValueAt(rowIndex, columnIndex)+", ");
-                for (int i = 0; i < columnIndex; i++) {                    
-                    if ((Integer)mainSortTable.getValueAt(rowIndex, i) >
-                            (Integer) mainSortTable.getValueAt(rowIndex, i+1)) {
-                        swapTable(rowIndex, i, i+1);
+        int columnCount = mainSortTable.getColumnCount();
+           
+        //сортируем пузырьком
+        for (int n = 0; n < rowCount * columnCount; n++) {
+            for (int i = 0; i < rowCount; i++) {
+                for (int j = 0; j < columnCount; j++) {
+                    if ((j != columnCount-1) && ((Integer) mainSortTable.getValueAt(i, j + 1) <
+                            (Integer) mainSortTable.getValueAt(i, j))) {
+                        swapTable(i, j+1, i, j);                        
                     }
                 }
-            }            
-        }*/
-
-        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-            for (int columnIndex = 0; columnIndex < columnCount ; columnCount--) {
-                System.out.print(mainSortTable.getValueAt(rowIndex, columnIndex)+", ");
-                for (int i = 0; i < columnIndex; i++) {                    
-                    if ((Integer)mainSortTable.getValueAt(rowIndex, i) >
-                            (Integer) mainSortTable.getValueAt(rowIndex, i+1)) {
-                        swapTable(rowIndex, i, i+1);
-                    }
+                //сравниваем последний элемент текущей строки
+                //с перым элементом следующей
+                if ((i != rowCount-1) && (Integer) mainSortTable.getValueAt(i + 1, 0) <
+                        (Integer) mainSortTable.getValueAt(i, rowCount - 1)) {
+                    swapTable(i+1, 0, i, rowCount-1);                    
                 }
             }
-        }
+        }        
     }
-    //TODO:
-    private void swapTable(int oldRowIndex, int oldColumnIndex, int newColumnIndex) {
-        System.out.println("SortingDemoView swapTable() oldRowIndex: "+oldRowIndex+" "+"oldColumnIndex: "+oldColumnIndex+" "+ "+newColumnIndex: "+newColumnIndex);
+
+    private void swapTable(int oldRowIndex, int oldColumnIndex, int newRowIndex, int newColumnIndex) {
+        System.out.println("SortingDemoView swapTable() oldRowIndex: " +
+                oldRowIndex + " " + "oldColumnIndex: " + oldColumnIndex + " " + "+newColumnIndex: " + newColumnIndex);
         Integer tmp = (Integer) mainSortTable.getValueAt(oldRowIndex, oldColumnIndex);
-        mainSortTable.setValueAt(mainSortTable.getValueAt(oldRowIndex, newColumnIndex), oldRowIndex, oldColumnIndex);
-        mainSortTable.setValueAt(tmp, oldRowIndex, newColumnIndex);
+        mainSortTable.setValueAt(mainSortTable.getValueAt(newRowIndex, newColumnIndex), oldRowIndex, oldColumnIndex);
+        mainSortTable.setValueAt(tmp, newRowIndex, newColumnIndex);
     }
 
-    //TODO: implement this method
+    //TODO: implement quick sort for table
     private void quickSort() {
-
     }
 
     @Action
@@ -363,7 +380,7 @@ public class SortingDemoView extends FrameView {
         JFileChooser fc = createFileChooser("openFileChooser");
         int option = fc.showOpenDialog(getFrame());
         Task task = null;
-        if (JFileChooser.APPROVE_OPTION == option) {            
+        if (JFileChooser.APPROVE_OPTION == option) {
             loadFromFile(fc.getSelectedFile());
         }
         return new LoadFromFileTask(getApplication());
@@ -385,31 +402,30 @@ public class SortingDemoView extends FrameView {
             while ((line = input.readLine()) != null) {
                 if (rowIndex >= rowCount) {
                     System.err.print("File has more lines than needed. Line no "
-                            +rowIndex+" "+line+"is explicit.");
+                            + rowIndex + " " + line + "is explicit.");
                     return;
                 }
                 columnIndex = 0;
                 String[] values = line.trim().split(getResourceMap().getString(SEPARATOR_IN_FILE_PROPERTY));
                 if (columnCount != values.length) {
-                    System.err.print("Line "+line+"does not match");
+                    System.err.print("Line " + line + "does not match");
                     return;
-                }                
-                for ( ;columnIndex < columnCount; columnIndex++) {
+                }
+                for (; columnIndex < columnCount; columnIndex++) {
                     if (isStringNumber(values[columnIndex].trim())) {
-                        mainSortTable.getModel().setValueAt(Integer.parseInt(values[columnIndex].trim()), rowIndex, columnIndex);
+                        mainSortTable.setValueAt(Integer.parseInt(values[columnIndex].trim()), rowIndex, columnIndex);
                     } else {
-                        System.err.print("Line "+line+"contains wrong number: "+values[columnIndex]);                        
+                        System.err.print("Line " + line + "contains wrong number: " + values[columnIndex]);
                         return;
                     }
                 }
-                
+
                 rowIndex++;
             }
             fileNameLabel.setText(fileToLoad.getAbsolutePath());
         } catch (IOException ex) {
-            Logger.getLogger(SortingDemoView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally {
+            //Logger.getLogger(SortingDemoView.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
             if (input != null) {
                 try {
                     input.close();
@@ -426,7 +442,7 @@ public class SortingDemoView extends FrameView {
      * @param strToCheck
      * @return
      */
-    private boolean isStringNumber(String strToCheck) {        
+    private boolean isStringNumber(String strToCheck) {
         return strToCheck.matches(IS_STRING_NUMBER_PATTERN);
     }
 
@@ -478,31 +494,60 @@ public class SortingDemoView extends FrameView {
         }
     }
 
-
     private class LoadFromFileTask extends org.jdesktop.application.Task<Object, Void> {
+
         LoadFromFileTask(org.jdesktop.application.Application app) {
             // Runs on the EDT.  Copy GUI state that
             // doInBackground() depends on from parameters
             // to LoadFromFileTask fields, here.
             super(app);
         }
-        @Override protected Object doInBackground() {
+
+        @Override
+        protected Object doInBackground() {
             // Your Task's code here.  This method runs
             // on a background thread, so don't reference
             // the Swing GUI from here.
             return null;  // return your result
         }
-        @Override protected void succeeded(Object result) {
+
+        @Override
+        protected void succeeded(Object result) {
             // Runs on the EDT.  Update the GUI based on
             // the result computed by doInBackground().
         }
     }
 
+    private void toDelete(Integer value) {
+        System.out.print(value);
+    }
 
+    @Action
+    public void fillTableRandom() {
+        //System.out.println("fillTableRandom()");
+        log.debug("Start");
+        int sizeToGenerate = mainSortTable.getColumnCount() * mainSortTable.getRowCount();
+        Random rand = new Random();
+        Set<Integer> setToGenerate = new LinkedHashSet<Integer>();
+        while (setToGenerate.size() < sizeToGenerate) {        
+            setToGenerate.add(rand.nextInt(sizeToGenerate));
+        }
+        //System.out.println("fillTableRandom() setToGenerate.size:"+setToGenerate.size());
+        Iterator<Integer> iterSetToGenerate = setToGenerate.iterator();
+        for (int rowCount = 0; rowCount <  mainSortTable.getRowCount();rowCount++) {
+            for (int columnCount = 0; columnCount <  mainSortTable.getColumnCount();columnCount++) {
+                if (iterSetToGenerate.hasNext()) {
+                    mainSortTable.setValueAt(iterSetToGenerate.next(), rowCount, columnCount);
+                }
+
+            }
+        }               
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu Main;
+    private javax.swing.JMenu SortMenu;
     private javax.swing.JButton buttonSort;
     private javax.swing.JLabel fileNameLabel;
+    private javax.swing.JMenuItem fillTableRandomMenuItem;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuItem loadFromFileMenuItem;
@@ -515,12 +560,10 @@ public class SortingDemoView extends FrameView {
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     // End of variables declaration//GEN-END:variables
-
     private final Timer messageTimer;
     private final Timer busyIconTimer;
     private final Icon idleIcon;
     private final Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
-
     private JDialog aboutBox;
 }

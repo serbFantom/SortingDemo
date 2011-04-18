@@ -177,10 +177,10 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="Main">
+        <Menu class="javax.swing.JMenu" name="SortMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="Main.text"/>
-            <Property name="name" type="java.lang.String" value="Main" noResource="true"/>
+            <Property name="text" type="java.lang.String" resourceKey="SortMenu.text"/>
+            <Property name="name" type="java.lang.String" value="SortMenu" noResource="true"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="sortMenuItem">
@@ -199,6 +199,15 @@
                 </Property>
                 <Property name="text" type="java.lang.String" resourceKey="loadFromFileMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="loadFromFileMenuItem" noResource="true"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="fillTableRandomMenuItem">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                  <action class="com.serb.sortingdemo.SortingDemoView" id="fillTableRandom" methodName="fillTableRandom"/>
+                </Property>
+                <Property name="text" type="java.lang.String" resourceKey="fillTableRandomMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="fillTableRandomMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
           </SubComponents>

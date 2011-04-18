@@ -18,10 +18,14 @@ public class ArrayUtil {
     }
 
     static void printValues(int[][] arr) {
+        System.out.println("{");
         for (int i = 0; i < arr.length; i++) {
-            System.out.print(arr[i] + ", ");
+            for (int j = 0; j < arr[i].length; j++) {
+                System.out.print(arr[i][j] + ", ");
+            }
+            System.out.print("\n");
         }
-        System.out.println("\n");
+        System.out.println("}");
     }
 
     static void bubbleSort(int[] arr) {
@@ -37,20 +41,33 @@ public class ArrayUtil {
         }
         printValues(arr);
     }
-    //http://www.cyberforum.ru/java-j2se/thread141128.html
-    public static int[][] bubbleSort(int[][] a) {
-        int len = a.length;
-        for (int k = 0; k < len; k++) {
-            for (int i = 0; i < len; i++) {
-                for (int j = 0; j < a[i].length - 1; j++) {
-                    if (a[i][j] > a[i][j + 1]) {
-                        int temp = a[i][j];
-                        a[i][j] = a[i][j + 1];
-                        a[i][j + 1] = temp;
+
+    //TODO: bubbleSort(int[][] a)
+    public static int[][] bubbleSort(int[][] arr) {
+        System.out.println("ArrayUtil start bubbleSort a.length= "+arr.length);
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                for (int k=0; k < arr.length; k++) {
+                    for (int l = 0; l < arr[k].length; l++) {
+                        //System.out.println("arr["+k+"].length= "+arr[k].length);
+                        if (l != arr[k].length-1 && (arr[k][l+1] < arr[k][l])) {
+                            //swap
+                            int tmp = arr[k][l+1];
+                            arr[k][l+1] = arr[k][l];
+                            arr[k][l] = tmp;
+                        }
+
                     }
+                    if (k != arr.length-1 && (arr[k+1][0] < arr[k][0])) {
+                        //swap
+                        int tmp = arr[k+1][0];
+                        arr[k+1][0] = arr[k][0];
+                        arr[k][0] = tmp;
+                    }
+
                 }
             }
         }
-        return a;
+        return arr;
     }
 }

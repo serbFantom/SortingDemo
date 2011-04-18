@@ -4,6 +4,7 @@
 
 package com.serb.sortingdemo;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -40,6 +41,8 @@ public class SortingDemoApp extends SingleFrameApplication {
      */
     public static void main(String[] args) {
 
+        //TODO:initialize log4j
+        PropertyConfigurator.configure("etc/log4j.properties");
         launch(SortingDemoApp.class, args);
     }
 }
