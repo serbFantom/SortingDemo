@@ -71,4 +71,9 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <!-- Copy log4j config into dist dir. -->        
+        <mkdir dir="${dist.jar.dir}/etc"/>
+        <copy file="etc/log4j.properties" tofile="${dist.jar.dir}/etc/log4j.properties" overwrite="true" />
+    </target>
 </project>

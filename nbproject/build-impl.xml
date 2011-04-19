@@ -644,8 +644,8 @@ is divided into following sections:
     <target name="-post-jar">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
-        <mkdir dir="${dist.jar.dir}/etc"/>
-        <copy file="etc/log4j.properties" tofile="${dist.jar.dir}/etc/log4j.properties" overwrite="true" />
+        <!--<mkdir dir="${dist.jar.dir}/etc"/>
+        <copy file="etc/log4j.properties" tofile="${dist.jar.dir}/etc/log4j.properties" overwrite="true" /> -->
     </target>
     <target depends="init,compile,-pre-jar,-do-jar-with-manifest,-do-jar-without-manifest,-do-jar-with-mainclass,-do-jar-with-libraries-and-splashscreen,-do-jar-with-libraries,-post-jar" description="Build JAR." name="jar"/>
     <!--
