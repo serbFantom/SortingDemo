@@ -322,7 +322,8 @@ public class SortingDemoView extends FrameView {
     @Action
     public void doSort() {
         System.out.println("doSort() method");
-        bubbleSort();
+        //bubbleSort();
+        quickSort();
     }
 
     /**
@@ -330,42 +331,40 @@ public class SortingDemoView extends FrameView {
      * Used only for academic goals
      */
     private void bubbleSort() {
-        System.out.println("SortingDemoView bubbleSort new version");
+        System.out.println("SortingDemoView bubbleSort for table");
         /*int[][] arrToSort = new int[][]{
-            {16, 15, 14, 13},
-            {6, 10, 11, 12, 15, 17},
-            {4, 1, 2, 3},
-            {9, 8, 7, 5},                        
-            {17, 19, 20, 18},};
+        {16, 15, 14, 13},
+        {6, 10, 11, 12, 15, 17},
+        {4, 1, 2, 3},
+        {9, 8, 7, 5},
+        {17, 19, 20, 18},};
         ArrayUtil.printValues(arrToSort);
         ArrayUtil.bubbleSort(arrToSort);        
         ArrayUtil.printValues(arrToSort);*/
 
         int rowCount = mainSortTable.getRowCount();
         int columnCount = mainSortTable.getColumnCount();
-           
+
         //сортируем пузырьком
         for (int n = 0; n < rowCount * columnCount; n++) {
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < columnCount; j++) {
-                    if ((j != columnCount-1) && ((Integer) mainSortTable.getValueAt(i, j + 1) <
-                            (Integer) mainSortTable.getValueAt(i, j))) {
-                        swapTable(i, j+1, i, j);                        
+                    if ((j != columnCount - 1) && ((Integer) mainSortTable.getValueAt(i, j + 1)
+                            < (Integer) mainSortTable.getValueAt(i, j))) {
+                        swapTable(i, j + 1, i, j);
                     }
                 }
                 //сравниваем последний элемент текущей строки
                 //с перым элементом следующей
-                if ((i != rowCount-1) && (Integer) mainSortTable.getValueAt(i + 1, 0) <
-                        (Integer) mainSortTable.getValueAt(i, rowCount - 1)) {
-                    swapTable(i+1, 0, i, rowCount-1);                    
+                if ((i != rowCount - 1) && (Integer) mainSortTable.getValueAt(i + 1, 0)
+                        < (Integer) mainSortTable.getValueAt(i, rowCount - 1)) {
+                    swapTable(i + 1, 0, i, rowCount - 1);
                 }
             }
-        }        
+        }
     }
 
     private void swapTable(int oldRowIndex, int oldColumnIndex, int newRowIndex, int newColumnIndex) {
-        System.out.println("SortingDemoView swapTable() oldRowIndex: " +
-                oldRowIndex + " " + "oldColumnIndex: " + oldColumnIndex + " " + "+newColumnIndex: " + newColumnIndex);
         Integer tmp = (Integer) mainSortTable.getValueAt(oldRowIndex, oldColumnIndex);
         mainSortTable.setValueAt(mainSortTable.getValueAt(newRowIndex, newColumnIndex), oldRowIndex, oldColumnIndex);
         mainSortTable.setValueAt(tmp, newRowIndex, newColumnIndex);
@@ -373,6 +372,11 @@ public class SortingDemoView extends FrameView {
 
     //TODO: implement quick sort for table
     private void quickSort() {
+        System.out.println("SortingDemoView quickSort array debug version");
+        int[] arr = new int[]{3, 4, 1, 2, 5, 6, 7, 8, 9, 0, 10, 11};
+        ArrayUtil.printValues(arr);
+        ArrayUtil.quickSort(arr);
+        ArrayUtil.printValues(arr);
     }
 
     @Action
@@ -391,6 +395,7 @@ public class SortingDemoView extends FrameView {
      * @param fileToLoad
      */
     private void loadFromFile(File fileToLoad) {
+        log.info("loadFromFile(" + fileToLoad + ")");
         BufferedReader input = null;
         try {
             input = new BufferedReader(new FileReader(fileToLoad));
@@ -461,7 +466,8 @@ public class SortingDemoView extends FrameView {
         return fc;
     }
 
-    /** This is a substitute for FileNameExtensionFilter, which is
+    /**
+     * This is a substitute for FileNameExtensionFilter, which is
      * only available on Java SE 6.
      */
     private static class TextFileFilter extends FileFilter {
@@ -494,6 +500,7 @@ public class SortingDemoView extends FrameView {
         }
     }
 
+    //TODO: use this task if needed on refactoring phase
     private class LoadFromFileTask extends org.jdesktop.application.Task<Object, Void> {
 
         LoadFromFileTask(org.jdesktop.application.Application app) {
@@ -522,6 +529,10 @@ public class SortingDemoView extends FrameView {
         System.out.print(value);
     }
 
+    /**
+     * Fill mainTable with random not repeated values 
+     * from 0 to columnCount*rowCount. 
+     */
     @Action
     public void fillTableRandom() {
         //System.out.println("fillTableRandom()");
@@ -529,19 +540,19 @@ public class SortingDemoView extends FrameView {
         int sizeToGenerate = mainSortTable.getColumnCount() * mainSortTable.getRowCount();
         Random rand = new Random();
         Set<Integer> setToGenerate = new LinkedHashSet<Integer>();
-        while (setToGenerate.size() < sizeToGenerate) {        
+        while (setToGenerate.size() < sizeToGenerate) {
             setToGenerate.add(rand.nextInt(sizeToGenerate));
         }
         //System.out.println("fillTableRandom() setToGenerate.size:"+setToGenerate.size());
         Iterator<Integer> iterSetToGenerate = setToGenerate.iterator();
-        for (int rowCount = 0; rowCount <  mainSortTable.getRowCount();rowCount++) {
-            for (int columnCount = 0; columnCount <  mainSortTable.getColumnCount();columnCount++) {
+        for (int rowCount = 0; rowCount < mainSortTable.getRowCount(); rowCount++) {
+            for (int columnCount = 0; columnCount < mainSortTable.getColumnCount(); columnCount++) {
                 if (iterSetToGenerate.hasNext()) {
                     mainSortTable.setValueAt(iterSetToGenerate.next(), rowCount, columnCount);
                 }
 
             }
-        }               
+        }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu SortMenu;
